@@ -144,6 +144,29 @@
             margin-bottom: 15px;
         }
 
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-online {
+            background: #10b981;
+        }
+
+        .status-offline {
+            background: #ef4444;
+        }
+
+        .connection-status {
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
         @media (max-width: 768px) {
             .datetime-container {
                 grid-template-columns: 1fr;
@@ -164,9 +187,15 @@
     <div class="container">
         <div class="header">
             <h1>Limpio PH Booking</h1>
+            <p>Book your sofa cleaning today</p>
         </div>
         
         <div class="form-container">
+            <div class="connection-status" id="connectionStatus">
+                <span class="status-indicator status-offline" id="statusIndicator"></span>
+                <span id="statusText">Connecting to booking system...</span>
+            </div>
+
             <div class="success-message" id="successMessage">
                 Thank you! Your booking request has been submitted successfully. We'll contact you soon to confirm your appointment.
             </div>
@@ -187,7 +216,7 @@
 
                 <div class="form-group">
                     <label for="phone">Contact Number *</label>
-                    <input type="tel" id="phone" name="phone" required>
+                    <input type="tel" id="phone" name="phone" required placeholder="+63 XXX XXX XXXX">
                 </div>
 
                 <div class="form-group">
@@ -196,7 +225,7 @@
                 </div>
 
                 <div class="availability-note">
-                    📅 Available dates and times are updated daily. Select from the options below.
+                    📅 Available dates and times are updated in real-time. Select from the options below.
                 </div>
 
                 <div class="datetime-container">
@@ -222,139 +251,17 @@
     </div>
 
     <script>
-        // Google Sheets configuration
-        const GOOGLE_SHEET_URL = 'YOUR_GOOGLE_SHEET_URL_HERE'; // You'll replace this with your actual sheet URL
+        // n8n Configuration - REPLACE THESE URLS WITH YOUR ACTUAL n8n WEBHOOK URLS
+        const BOOKING_WEBHOOK_URL = 'https://your-n8n-instance.com/webhook/booking-webhook';
+        const AVAILABILITY_URL = 'https://your-n8n-instance.com/webhook/availability';
         
         let availabilityData = {};
+        let isOnline = false;
 
-        // Load availability from Google Sheets
-        async function loadAvailability() {
-            try {
-                // For now, we'll use sample data. Replace this with actual Google Sheets API call
-                // You can use Google Sheets API or make the sheet public and fetch as CSV
-                
-                // Sample availability data structure
-                availabilityData = {
-                    "2025-06-12": ["9:00 AM", "11:00 AM", "2:00 PM", "4:00 PM"],
-                    "2025-06-13": ["10:00 AM", "1:00 PM", "3:00 PM"],
-                    "2025-06-14": ["9:00 AM", "12:00 PM", "2:00 PM", "5:00 PM"],
-                    "2025-06-15": ["8:00 AM", "11:00 AM", "3:00 PM"],
-                    "2025-06-16": ["10:00 AM", "1:00 PM", "4:00 PM"],
-                    "2025-06-17": ["9:00 AM", "2:00 PM"],
-                    "2025-06-18": ["11:00 AM", "3:00 PM", "5:00 PM"]
-                };
-
-                populateDates();
-                document.getElementById('loadingAvailability').style.display = 'none';
-                document.getElementById('bookingForm').style.display = 'block';
-                
-            } catch (error) {
-                console.error('Error loading availability:', error);
-                document.getElementById('loadingAvailability').innerHTML = 'Error loading availability. Please refresh the page.';
-            }
-        }
-
-        // Populate date dropdown
-        function populateDates() {
-            const dateSelect = document.getElementById('availableDate');
-            dateSelect.innerHTML = '<option value="">Select a date</option>';
+        // Update connection status
+        function updateConnectionStatus(online, message) {
+            const indicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
             
-            Object.keys(availabilityData).sort().forEach(date => {
-                const option = document.createElement('option');
-                option.value = date;
-                option.textContent = formatDate(date);
-                dateSelect.appendChild(option);
-            });
-        }
-
-        // Populate time dropdown based on selected date
-        function populateTimes(selectedDate) {
-            const timeSelect = document.getElementById('availableTime');
-            timeSelect.innerHTML = '<option value="">Select a time</option>';
-            
-            if (selectedDate && availabilityData[selectedDate]) {
-                availabilityData[selectedDate].forEach(time => {
-                    const option = document.createElement('option');
-                    option.value = time;
-                    option.textContent = time;
-                    timeSelect.appendChild(option);
-                });
-            }
-        }
-
-        // Format date for display
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            return date.toLocaleDateString('en-US', options);
-        }
-
-        // Handle date selection
-        document.getElementById('availableDate').addEventListener('change', function() {
-            populateTimes(this.value);
-        });
-
-        // Handle form submission
-        document.getElementById('bookingForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submitBtn');
-            const successMessage = document.getElementById('successMessage');
-            const errorMessage = document.getElementById('errorMessage');
-            
-            // Hide previous messages
-            successMessage.style.display = 'none';
-            errorMessage.style.display = 'none';
-            
-            // Disable submit button
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
-            
-            // Collect form data
-            const formData = new FormData(this);
-            
-            // Create booking object
-            const bookingData = {
-                firstName: formData.get('firstName'),
-                phone: formData.get('phone'),
-                address: formData.get('address'),
-                date: formData.get('availableDate'),
-                time: formData.get('availableTime'),
-                submittedAt: new Date().toISOString()
-            };
-            
-            try {
-                // TODO: Replace with your n8n webhook URL
-                const webhookUrl = 'YOUR_N8N_WEBHOOK_URL_HERE';
-                
-                const response = await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(bookingData)
-                });
-                
-                if (response.ok) {
-                    successMessage.style.display = 'block';
-                    document.getElementById('bookingForm').reset();
-                    populateTimes(''); // Clear time options
-                    successMessage.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                    throw new Error('Network response was not ok');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                errorMessage.style.display = 'block';
-                errorMessage.scrollIntoView({ behavior: 'smooth' });
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = '📅 Request Booking';
-            }
-        });
-
-        // Load availability when page loads
-        loadAvailability();
-    </script>
-</body>
-</html>
+            isOnline = online;
+            indicator.className = `status-indicator ${online
