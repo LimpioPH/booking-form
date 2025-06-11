@@ -476,12 +476,13 @@
             const prevBtn = document.getElementById('prevMonth');
             const nextBtn = document.getElementById('nextMonth');
             
-            const minDate = new Date();
-            const maxDate = new Date();
-            maxDate.setMonth(maxDate.getMonth() + 1);
+            const today = new Date();
+            const currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+            const viewingMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             
-            prevBtn.disabled = currentDate <= minDate;
-            nextBtn.disabled = currentDate >= maxDate;
+            prevBtn.disabled = viewingMonth.getTime() <= currentMonth.getTime();
+            nextBtn.disabled = viewingMonth.getTime() >= nextMonth.getTime();
         }
         
         function selectDate(dateObj, dateString) {
@@ -515,10 +516,11 @@
             const newDate = new Date(currentDate);
             newDate.setMonth(currentDate.getMonth() + direction);
             
-            const minDate = new Date();
-            const maxDate = new Date();
-            maxDate.setMonth(maxDate.getMonth() + 1);
+            const today = new Date();
+            const minDate = new Date(today.getFullYear(), today.getMonth(), 1); // First day of current month
+            const maxDate = new Date(today.getFullYear(), today.getMonth() + 1, 1); // First day of next month + 1
             
+            // Allow navigation between current month and next month
             if (newDate >= minDate && newDate <= maxDate) {
                 currentDate = newDate;
                 renderCalendar();
