@@ -167,6 +167,16 @@
             color: #666;
         }
 
+        .booking-id {
+            background: #e8f4fd;
+            color: #1e40af;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
         @media (max-width: 768px) {
             .datetime-container {
                 grid-template-columns: 1fr;
@@ -186,8 +196,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Limpio PH Booking</h1>
-            <p>Book your sofa cleaning today</p>
+            <h1>🧽 Limpio PH Booking</h1>
+            <p>Professional cleaning services in the Philippines</p>
         </div>
         
         <div class="form-container">
@@ -197,7 +207,12 @@
             </div>
 
             <div class="success-message" id="successMessage">
-                Thank you! Your booking request has been submitted successfully. We'll contact you soon to confirm your appointment.
+                <div>
+                    Thank you! Your booking request has been submitted successfully. We'll contact you soon to confirm your appointment.
+                </div>
+                <div class="booking-id" id="bookingId" style="display: none;">
+                    <strong>Booking Reference:</strong> <span id="bookingIdText"></span>
+                </div>
             </div>
             
             <div class="error-message" id="errorMessage">
@@ -211,21 +226,21 @@
             <form id="bookingForm" style="display: none;">
                 <div class="form-group">
                     <label for="firstName">First Name *</label>
-                    <input type="text" id="firstName" name="firstName" required>
+                    <input type="text" id="firstName" name="firstName" required placeholder="Your first name">
                 </div>
 
                 <div class="form-group">
                     <label for="phone">Contact Number *</label>
-                    <input type="tel" id="phone" name="phone" required placeholder="+63 XXX XXX XXXX">
+                    <input type="tel" id="phone" name="phone" required placeholder="+63 XXX XXX XXXX or 09XX XXX XXXX">
                 </div>
 
                 <div class="form-group">
-                    <label for="address">Address *</label>
-                    <input type="text" id="address" name="address" placeholder="Complete address for cleaning service" required>
+                    <label for="address">Complete Address *</label>
+                    <input type="text" id="address" name="address" placeholder="Street, Barangay, City, Province" required>
                 </div>
 
                 <div class="availability-note">
-                    📅 Available dates and times are updated in real-time. Select from the options below.
+                    📅 Available dates and times are updated in real-time from our scheduling system.
                 </div>
 
                 <div class="datetime-container">
@@ -251,9 +266,9 @@
     </div>
 
     <script>
-        // n8n Configuration - REPLACE THESE URLS WITH YOUR ACTUAL n8n WEBHOOK URLS
-        const BOOKING_WEBHOOK_URL = 'https://your-n8n-instance.com/webhook/booking-webhook';
-        const AVAILABILITY_URL = 'https://your-n8n-instance.com/webhook/availability';
+        // Google Apps Script Configuration
+        // REPLACE THIS URL WITH YOUR ACTUAL GOOGLE APPS SCRIPT DEPLOYMENT URL
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID_HERE/exec';
         
         let availabilityData = {};
         let isOnline = false;
@@ -264,4 +279,57 @@
             const statusText = document.getElementById('statusText');
             
             isOnline = online;
-            indicator.className = `status-indicator ${online
+            indicator.className = `status-indicator ${online ? 'status-online' : 'status-offline'}`;
+            statusText.textContent = message;
+        }
+
+        // Load availability from Google Apps Script
+        async function loadAvailability() {
+            try {
+                updateConnectionStatus(false, 'Loading availability...');
+                
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.status === 'error') {
+                    throw new Error(data.message || 'Server error');
+                }
+                
+                availabilityData = data.availability || {};
+                
+                if (Object.keys(availabilityData).length === 0) {
+                    throw new Error('No availability data received');
+                }
+
+                populateDates();
+                updateConnectionStatus(true, 'Connected - Live availability loaded');
+                document.getElementById('loadingAvailability').style.display = 'none';
+                document.getElementById('bookingForm').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading availability:', error);
+                updateConnectionStatus(false, 'Using offline schedule - Limited availability');
+                
+                // Fallback to sample data
+                availabilityData = {
+                    "2025-06-12": ["9:00 AM", "11:00 AM", "2:00 PM", "4:00 PM"],
+                    "2025-06-13": ["10:00 AM", "1:00 PM", "3:00 PM"],
+                    "2025-06-14": ["9:00 AM", "12:00 PM", "2:00 PM", "5:00 PM"],
+                    "2025-06-15": ["8:00 AM", "11:00 AM", "3:00 PM"],
+                    "2025-06-16": ["10:00 AM", "1:00 PM", "4:00 PM"],
+                    "2025-06-17": ["9:00 AM", "2:00 PM"],
+                    "2025-06-18": ["11:00 AM", "3:00 PM", "5:00 PM"]
+                };
+                
+                populateDates();
+                document.getElementById('loadingAvailability').style.display =
