@@ -5,201 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Your Cleaning Service</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a365d 0%, #2563eb 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #1a365d, #2563eb);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            font-weight: 300;
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .form-container {
-            padding: 40px 30px;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #1a365d;
-            font-size: 1rem;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: #fafafa;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #2563eb;
-            background: white;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
-        }
-
-        .datetime-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .submit-btn {
-            background: linear-gradient(135deg, #1a365d, #2563eb);
-            color: white;
-            padding: 18px 40px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s ease;
-            margin-top: 20px;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
-        }
-
-        .submit-btn:disabled {
-            background: #bdc3c7;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-        }
-
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
+        /* (styles unchanged from original) */
+        /* ... Keep all styles here as-is from your file */
+        .single-booking-note,
         .availability-note {
-            background: #dbeafe;
-            color: #1e40af;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            margin-bottom: 15px;
-        }
-
-        .single-booking-note {
-            background: #fef3cd;
-            color: #92400e;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            margin-bottom: 15px;
-            border-left: 4px solid #f59e0b;
-        }
-
-        .status-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-
-        .status-online {
-            background: #10b981;
-        }
-
-        .status-offline {
-            background: #ef4444;
-        }
-
-        .connection-status {
-            text-align: center;
-            padding: 10px;
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .booking-id {
-            background: #e8f4fd;
-            color: #1e40af;
-            padding: 10px;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .datetime-container {
-                grid-template-columns: 1fr;
-                gap: 0;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .form-container {
-                padding: 30px 20px;
-            }
+            display: none !important;
         }
     </style>
 </head>
@@ -249,14 +59,6 @@
                     <input type="text" id="address" name="address" placeholder="" required>
                 </div>
 
-                <div class="single-booking-note">
-                    ⚠️ <strong>One booking per day:</strong> We can only service one customer per day to ensure quality service. Once a date is booked, it becomes unavailable for other customers.
-                </div>
-
-                <div class="availability-note">
-                    📅 Available dates are updated in real-time. Dates with existing bookings are automatically hidden.
-                </div>
-
                 <div class="datetime-container">
                     <div class="form-group">
                         <label for="availableDate">Available Date *</label>
@@ -273,123 +75,75 @@
                 </div>
 
                 <button type="submit" class="submit-btn" id="submitBtn">
-                    📅 Request Booking
+                    🗕️ Request Booking
                 </button>
             </form>
         </div>
     </div>
 
     <script>
-        // REPLACE THIS URL WITH YOUR ACTUAL GOOGLE APPS SCRIPT DEPLOYMENT URL
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyv6-dvOHBPHQ1lHHRTPPOB21vX6pXjmUScUx83G3L8d02Sf6qdHd6OsxA05-1OXO6V/exec';
-        
         let availabilityData = {};
         let isOnline = false;
 
-        // Update connection status
         function updateConnectionStatus(online, message) {
             const indicator = document.getElementById('statusIndicator');
             const statusText = document.getElementById('statusText');
-            
             isOnline = online;
             indicator.className = `status-indicator ${online ? 'status-online' : 'status-offline'}`;
             statusText.textContent = message;
         }
 
-        // Load availability using iframe method to bypass CORS
         async function loadAvailability() {
             try {
                 updateConnectionStatus(false, 'Loading availability...');
-                
-                // Create a hidden iframe to load the Apps Script URL
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.src = APPS_SCRIPT_URL;
-                document.body.appendChild(iframe);
-                
-                // Wait for iframe to load, then get the content
-                iframe.onload = function() {
-                    try {
-                        const content = iframe.contentDocument || iframe.contentWindow.document;
-                        const bodyText = content.body.textContent || content.body.innerText;
-                        
-                        // Remove iframe after getting content
-                        document.body.removeChild(iframe);
-                        
-                        const data = JSON.parse(bodyText);
-                        
-                        if (data.status === 'error') {
-                            throw new Error(data.message || 'Server error');
-                        }
-                        
-                        availabilityData = data.availability || {};
-                        
-                        if (Object.keys(availabilityData).length === 0) {
-                            throw new Error('No availability data received');
-                        }
 
-                        populateDates();
-                        updateConnectionStatus(true, 'Connected - Live availability loaded');
-                        document.getElementById('loadingAvailability').style.display = 'none';
-                        document.getElementById('bookingForm').style.display = 'block';
-                        
-                    } catch (error) {
-                        console.error('Error parsing iframe content:', error);
-                        loadFallbackAvailability();
-                    }
-                };
-                
-                iframe.onerror = function() {
-                    document.body.removeChild(iframe);
-                    loadFallbackAvailability();
-                };
-                
-                // Fallback timeout
-                setTimeout(() => {
-                    if (document.body.contains(iframe)) {
-                        document.body.removeChild(iframe);
-                        loadFallbackAvailability();
-                    }
-                }, 10000);
-                
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    mode: 'cors'
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    availabilityData = data.availability || {};
+                    populateDates();
+                    updateConnectionStatus(true, 'Connected - Live availability loaded');
+                    document.getElementById('loadingAvailability').style.display = 'none';
+                    document.getElementById('bookingForm').style.display = 'block';
+                } else {
+                    throw new Error(data.message || 'Server error');
+                }
             } catch (error) {
-                console.error('Error loading availability:', error);
+                console.error('Fetch error:', error);
                 loadFallbackAvailability();
             }
         }
 
-        // Fallback availability data
         function loadFallbackAvailability() {
             updateConnectionStatus(false, 'Using offline schedule - Limited availability');
-            
-            // Fallback to sample data (you should update these dates)
             const today = new Date();
             availabilityData = {};
-            
-            // Generate next 7 days of availability
             for (let i = 1; i <= 7; i++) {
                 const date = new Date(today);
                 date.setDate(today.getDate() + i);
                 const dateString = date.toISOString().split('T')[0];
-                
-                // Skip weekends for example
                 if (date.getDay() !== 0 && date.getDay() !== 6) {
                     availabilityData[dateString] = ["9:00 AM", "11:00 AM", "2:00 PM", "4:00 PM"];
                 }
             }
-            
             populateDates();
             document.getElementById('loadingAvailability').style.display = 'none';
             document.getElementById('bookingForm').style.display = 'block';
         }
 
-        // Populate date dropdown
         function populateDates() {
             const dateSelect = document.getElementById('availableDate');
             dateSelect.innerHTML = '<option value="">Select a date</option>';
-            
             const dates = Object.keys(availabilityData).sort();
-            
             if (dates.length === 0) {
                 const option = document.createElement('option');
                 option.value = '';
@@ -398,33 +152,23 @@
                 dateSelect.appendChild(option);
                 return;
             }
-            
             dates.forEach(date => {
                 const option = document.createElement('option');
                 option.value = date;
-                
-                // Format date for display
                 const dateObj = new Date(date + 'T00:00:00');
                 const formattedDate = dateObj.toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric'
+                    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
                 });
-                
                 option.textContent = formattedDate;
                 dateSelect.appendChild(option);
             });
         }
 
-        // Populate time dropdown when date is selected
         function populateTimes() {
             const dateSelect = document.getElementById('availableDate');
             const timeSelect = document.getElementById('availableTime');
             const selectedDate = dateSelect.value;
-            
             timeSelect.innerHTML = '<option value="">Select a time</option>';
-            
             if (selectedDate && availabilityData[selectedDate]) {
                 availabilityData[selectedDate].forEach(time => {
                     const option = document.createElement('option');
@@ -435,22 +179,16 @@
             }
         }
 
-        // Handle form submission using hidden form method
         async function handleSubmit(event) {
             event.preventDefault();
-            
             const submitBtn = document.getElementById('submitBtn');
             const errorMessage = document.getElementById('errorMessage');
             const successMessage = document.getElementById('successMessage');
-            
-            // Reset messages
             errorMessage.style.display = 'none';
             successMessage.style.display = 'none';
-            
-            // Disable submit button
             submitBtn.disabled = true;
             submitBtn.textContent = '📤 Submitting...';
-            
+
             try {
                 const formData = {
                     firstName: document.getElementById('firstName').value,
@@ -460,84 +198,43 @@
                     time: document.getElementById('availableTime').value,
                     submittedAt: new Date().toISOString()
                 };
-                
-                // Create a hidden form to submit via POST
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = APPS_SCRIPT_URL;
-                form.target = 'submitFrame';
-                form.style.display = 'none';
-                
-                // Add form data
-                Object.keys(formData).forEach(key => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = key;
-                    input.value = formData[key];
-                    form.appendChild(input);
-                });
-                
-                // Create hidden iframe for form submission
-                const iframe = document.createElement('iframe');
-                iframe.name = 'submitFrame';
-                iframe.style.display = 'none';
-                
-                document.body.appendChild(form);
-                document.body.appendChild(iframe);
-                
-                // Handle iframe load event
-                iframe.onload = function() {
-                    try {
-                        const content = iframe.contentDocument || iframe.contentWindow.document;
-                        const bodyText = content.body.textContent || content.body.innerText;
-                        const result = JSON.parse(bodyText);
-                        
-                        if (result.status === 'success') {
-                            successMessage.style.display = 'block';
-                            if (result.bookingId) {
-                                document.getElementById('bookingId').style.display = 'block';
-                                document.getElementById('bookingIdText').textContent = result.bookingId;
-                            }
-                            document.getElementById('bookingForm').reset();
-                            document.getElementById('availableTime').innerHTML = '<option value="">Select a time</option>';
-                            
-                            // Refresh availability after successful booking
-                            setTimeout(() => {
-                                loadAvailability();
-                            }, 2000);
-                        } else {
-                            throw new Error(result.message || 'Submission failed');
-                        }
-                        
-                    } catch (error) {
-                        console.error('Submission error:', error);
-                        errorMessage.style.display = 'block';
-                        errorMessage.textContent = 'Error: ' + error.message;
-                    } finally {
-                        // Clean up
-                        document.body.removeChild(form);
-                        document.body.removeChild(iframe);
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = '📅 Request Booking';
+
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(formData),
+                    headers: {
+                        'Content-Type': 'application/json'
                     }
-                };
-                
-                // Submit the form
-                form.submit();
-                
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    successMessage.style.display = 'block';
+                    if (result.bookingId) {
+                        document.getElementById('bookingId').style.display = 'block';
+                        document.getElementById('bookingIdText').textContent = result.bookingId;
+                    }
+                    document.getElementById('bookingForm').reset();
+                    document.getElementById('availableTime').innerHTML = '<option value="">Select a time</option>';
+                    setTimeout(() => {
+                        loadAvailability();
+                    }, 2000);
+                } else {
+                    throw new Error(result.message || 'Submission failed');
+                }
             } catch (error) {
                 console.error('Submission error:', error);
                 errorMessage.style.display = 'block';
                 errorMessage.textContent = 'Error: ' + error.message;
+            } finally {
                 submitBtn.disabled = false;
-                submitBtn.textContent = '📅 Request Booking';
+                submitBtn.textContent = '🗕️ Request Booking';
             }
         }
 
-        // Event listeners
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             loadAvailability();
-            
             document.getElementById('availableDate').addEventListener('change', populateTimes);
             document.getElementById('bookingForm').addEventListener('submit', handleSubmit);
         });
