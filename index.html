@@ -490,7 +490,7 @@
 
     <script>
         // REPLACE THIS URL WITH YOUR ACTUAL GOOGLE APPS SCRIPT DEPLOYMENT URL
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwCBK4JlvrbfN8WFpOrMaMZhCBGLzZaZZyTVXieRil5_4HHOYn21ZgItMxwlgbd73pq/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytap6oCqTKeU7I08Z7JjJL1vkOR_wsalRtCqIrwVZOaOg7lZAPuDJLIsh8QAjqeBPx/exec';
         
         let availabilityData = {};
         let isOnline = false;
@@ -575,6 +575,12 @@ function getCurrentDateInTimezone() {
         const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
         return new Date(utc + (8 * 3600000));
     }
+}
+        function formatDateConsistently(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
         let currentDate = getCurrentDateInTimezone();
@@ -665,7 +671,7 @@ const isAvailable = availabilityData[dateString] && availabilityData[dateString]
         }
         
         function selectDate(dateObj, dateString) {
-            selectedDate = dateString;
+            selectedDate = formatDateConsistently(dateObj);
             
             // Update hidden input
             document.getElementById('availableDate').value = dateString;
