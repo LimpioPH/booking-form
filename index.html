@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Your Cleaning Service</title>
+    <title>Book Your Cleaning Service - Limpio PH</title>
     <style>
         * {
             margin: 0;
@@ -32,17 +32,71 @@
             color: white;
             padding: 40px 30px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+        }
+
+        .logo-container {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo-placeholder {
+            font-size: 3rem;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .header h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
             font-weight: 300;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .header p {
             font-size: 1.1rem;
             opacity: 0.9;
+            position: relative;
+            z-index: 2;
         }
 
         .form-container {
@@ -278,6 +332,16 @@
             margin-top: 10px;
         }
 
+        .timezone-info {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 10px;
+            padding: 5px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
         @media (max-width: 768px) {
             .datetime-container {
                 grid-template-columns: 1fr;
@@ -300,20 +364,34 @@
                 font-size: 0.7rem;
                 padding: 6px 2px;
             }
+
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Limpio PH Booking</h1>
-            <p>Book your sofa cleaning today</p>
+            <div class="logo-container">
+                <div class="logo">
+                    <div class="logo-placeholder">🧽</div>
+                </div>
+            </div>
+            <h1>Limpio PH</h1>
+            <p>Professional Sofa Cleaning Service</p>
         </div>
         
         <div class="form-container">
             <div class="connection-status" id="connectionStatus">
                 <span class="status-indicator status-offline" id="statusIndicator"></span>
                 <span id="statusText">Connecting to booking system...</span>
+            </div>
+
+            <div class="timezone-info">
+                📍 All times shown in Philippine Standard Time (PST)
             </div>
 
             <div class="success-message" id="successMessage">
@@ -389,8 +467,17 @@
         
         let availabilityData = {};
         let isOnline = false;
-        let currentDate = new Date();
         let selectedDate = null;
+
+        // Get current date in Philippine timezone
+        function getPhilippineDate() {
+            const now = new Date();
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const philippineTime = new Date(utc + (8 * 3600000)); // UTC+8 for Philippines
+            return philippineTime;
+        }
+
+        let currentDate = getPhilippineDate();
 
         // Update connection status
         function updateConnectionStatus(online, message) {
@@ -434,7 +521,7 @@
             const startDate = new Date(firstDay);
             startDate.setDate(firstDay.getDate() - firstDay.getDay());
             
-            const today = new Date();
+            const today = getPhilippineDate();
             today.setHours(0, 0, 0, 0);
             
             // Create calendar days
@@ -471,17 +558,6 @@
                 
                 grid.appendChild(dayElement);
             }
-            
-            // Update navigation buttons
-            const prevBtn = document.getElementById('prevMonth');
-            const nextBtn = document.getElementById('nextMonth');
-            
-            const minDate = new Date();
-            const maxDate = new Date();
-            maxDate.setMonth(maxDate.getMonth() + 1);
-            
-            prevBtn.disabled = currentDate <= minDate;
-            nextBtn.disabled = currentDate >= maxDate;
         }
         
         function selectDate(dateObj, dateString) {
@@ -515,14 +591,33 @@
             const newDate = new Date(currentDate);
             newDate.setMonth(currentDate.getMonth() + direction);
             
-            const minDate = new Date();
-            const maxDate = new Date();
-            maxDate.setMonth(maxDate.getMonth() + 1);
+            const philippineToday = getPhilippineDate();
+            const minDate = new Date(philippineToday.getFullYear(), philippineToday.getMonth(), 1);
+            const maxDate = new Date(philippineToday.getFullYear(), philippineToday.getMonth() + 1, 1);
             
-            if (newDate >= minDate && newDate <= maxDate) {
+            // Allow navigation between current month and next month only
+            if (newDate >= minDate && newDate < maxDate) {
                 currentDate = newDate;
                 renderCalendar();
+                updateNavigationButtons();
             }
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevMonth');
+            const nextBtn = document.getElementById('nextMonth');
+            
+            const philippineToday = getPhilippineDate();
+            const currentYear = currentDate.getFullYear();
+            const currentMonth = currentDate.getMonth();
+            const todayYear = philippineToday.getFullYear();
+            const todayMonth = philippineToday.getMonth();
+            
+            // Disable prev button if we're at current month
+            prevBtn.disabled = (currentYear === todayYear && currentMonth === todayMonth);
+            
+            // Disable next button if we're at next month
+            nextBtn.disabled = (currentYear === todayYear && currentMonth === todayMonth + 1);
         }
 
         // Load availability using JSONP method to bypass CORS
@@ -551,6 +646,7 @@
                         document.getElementById('loadingAvailability').style.display = 'none';
                         document.getElementById('bookingForm').style.display = 'block';
                         renderCalendar();
+                        updateNavigationButtons();
                         
                     } catch (error) {
                         console.error('Error processing JSONP response:', error);
@@ -594,12 +690,12 @@
         function loadFallbackAvailability() {
             updateConnectionStatus(false, 'Using offline schedule');
             
-            // Fallback to sample data (you should update these dates)
-            const today = new Date();
+            // Fallback to sample data using Philippine time
+            const today = getPhilippineDate();
             availabilityData = {};
             
-            // Generate next 7 days of availability
-            for (let i = 1; i <= 7; i++) {
+            // Generate next 14 days of availability
+            for (let i = 1; i <= 14; i++) {
                 const date = new Date(today);
                 date.setDate(today.getDate() + i);
                 const dateString = date.toISOString().split('T')[0];
@@ -613,6 +709,7 @@
             document.getElementById('loadingAvailability').style.display = 'none';
             document.getElementById('bookingForm').style.display = 'block';
             renderCalendar();
+            updateNavigationButtons();
         }
 
         // Populate time dropdown when date is selected
@@ -759,6 +856,9 @@
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
+            // Set current date to Philippine time
+            currentDate = getPhilippineDate();
+            
             loadAvailability();
             
             document.getElementById('prevMonth').addEventListener('click', () => navigateMonth(-1));
