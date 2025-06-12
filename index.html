@@ -404,7 +404,6 @@
             </div>
 
             <div class="loading" id="loadingAvailability">
-                Loading available dates and times...
             </div>
             
             <form id="bookingForm" style="display: none;">
@@ -632,7 +631,7 @@
         // Load availability using JSONP method to bypass CORS
         async function loadAvailability() {
             try {
-                updateConnectionStatus(false, '');
+                updateConnectionStatus(false, 'Loading');
                 
                 // Try JSONP approach first
                 const script = document.createElement('script');
