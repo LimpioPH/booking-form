@@ -275,19 +275,20 @@
             text-align: center;
         }
 
-        .submit-btn {
-            background: linear-gradient(135deg, #1a365d, #2563eb);
-            color: white;
-            padding: 18px 40px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s ease;
-            margin-top: 20px;
-        }
+.submit-btn {
+    background: linear-gradient(135deg, #1a365d, #2563eb);
+    color: white;
+    padding: 18px 40px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+    margin-top: 30px;
+    display: none; /* ADD THIS LINE */
+}
 
         .submit-btn:hover {
             transform: translateY(-2px);
@@ -439,8 +440,13 @@
                 There was an error submitting your request. Please try again or contact us directly.
             </div>
 
-            <div class="loading" id="loadingAvailability">
-            </div>
+<div class="loading" id="loadingAvailability">
+    <div style="text-align: center; padding: 40px;">
+        <div style="font-size: 2rem; margin-bottom: 15px;">⏳</div>
+        <div style="font-size: 1.1rem; color: #666;">Loading available dates...</div>
+        <div style="font-size: 0.9rem; color: #999; margin-top: 10px;">Please wait a moment</div>
+    </div>
+</div>
             
             <form id="bookingForm" style="display: none;">
                 <div class="form-group">
@@ -742,7 +748,8 @@ const isAvailable = availabilityData[dateString] && availabilityData[dateString]
 
                         updateConnectionStatus(true, 'Connected');
                         document.getElementById('loadingAvailability').style.display = 'none';
-                        document.getElementById('bookingForm').style.display = 'block';
+document.getElementById('bookingForm').style.display = 'block';
+document.getElementById('submitBtn').style.display = 'block'; /* ADD THIS LINE */
                         renderCalendar();
                         updateNavigationButtons();
                         
