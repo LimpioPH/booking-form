@@ -443,11 +443,16 @@
         <div style="font-size: 0.9rem; color: #666; margin-bottom: 10px; padding: 8px; background: #f8f9fa; border-radius: 5px; text-align: center;">
             📍 All dates and times are in Philippine Time (GMT+8)
         </div>
-        <div class="calendar-container">
-            <!-- rest of calendar HTML stays the same -->
-                            <div class="calendar-grid" id="calendarGrid">
-                                <!-- Calendar will be populated by JavaScript -->
-                            </div>
+<div class="calendar-container">
+    <div class="calendar-header">
+        <button type="button" class="calendar-nav" id="prevMonth">‹</button>
+        <div class="calendar-title" id="calendarTitle">Loading...</div>
+        <button type="button" class="calendar-nav" id="nextMonth">›</button>
+    </div>
+    <div class="calendar-grid" id="calendarGrid">
+        <!-- Calendar will be populated by JavaScript -->
+    </div>
+</div>
                         </div>
                         <div class="selected-date-display" id="selectedDateDisplay" style="display: none;">
                             Selected: <span id="selectedDateText"></span>
