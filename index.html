@@ -173,6 +173,21 @@
             opacity: 0.3;
             cursor: not-allowed;
         }
+        .calendar-nav {
+    background: #2563eb;
+    color: white;
+    border: 2px solid #2563eb;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: all 0.2s;
+}
+
+.calendar-nav:hover:not(:disabled) {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+}
 
         .calendar-title {
             font-weight: 600;
@@ -676,7 +691,7 @@ function getCurrentDateInTimezone() {
             const newDate = new Date(currentDate);
             newDate.setMonth(currentDate.getMonth() + direction);
             
-            const philippineToday = getPhilippineDate();
+            const philippineToday = getCurrentDateInTimezone();
             
             // Set boundaries: current month and next month only
             const currentMonth = philippineToday.getMonth();
@@ -702,7 +717,7 @@ function getCurrentDateInTimezone() {
             const prevBtn = document.getElementById('prevMonth');
             const nextBtn = document.getElementById('nextMonth');
             
-            const philippineToday = getPhilippineDate();
+            const philippineToday = getCurrentDateInTimezone();
             const currentMonth = philippineToday.getMonth();
             const currentYear = philippineToday.getFullYear();
             const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
