@@ -377,7 +377,7 @@
         <div class="header">
             <div class="logo-container">
                 <div class="logo">
-                    <div class="logo-placeholder">🧽</div>
+                    <img src="logo.png" alt="Limpio PH Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
                 </div>
             </div>
             <h1>Limpio PH</h1>
@@ -388,10 +388,6 @@
             <div class="connection-status" id="connectionStatus">
                 <span class="status-indicator status-offline" id="statusIndicator"></span>
                 <span id="statusText">Connecting to booking system...</span>
-            </div>
-
-            <div class="timezone-info">
-                📍 All times shown in Philippine Standard Time (PST)
             </div>
 
             <div class="success-message" id="successMessage">
@@ -642,7 +638,7 @@
                             throw new Error('No availability data received');
                         }
 
-                        updateConnectionStatus(true, 'Connected - Live availability loaded');
+                        updateConnectionStatus(true, 'Connected');
                         document.getElementById('loadingAvailability').style.display = 'none';
                         document.getElementById('bookingForm').style.display = 'block';
                         renderCalendar();
