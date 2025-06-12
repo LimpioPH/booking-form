@@ -377,7 +377,7 @@
         <div class="header">
             <div class="logo-container">
                 <div class="logo">
-                    <img src="logo.png" alt="Limpio PH Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                    <div class="logo-placeholder">🧽</div>
                 </div>
             </div>
             <h1>Limpio PH</h1>
@@ -588,11 +588,21 @@
             newDate.setMonth(currentDate.getMonth() + direction);
             
             const philippineToday = getPhilippineDate();
-            const minDate = new Date(philippineToday.getFullYear(), philippineToday.getMonth(), 1);
-            const maxDate = new Date(philippineToday.getFullYear(), philippineToday.getMonth() + 1, 1);
             
-            // Allow navigation between current month and next month only
-            if (newDate >= minDate && newDate < maxDate) {
+            // Set boundaries: current month and next month only
+            const currentMonth = philippineToday.getMonth();
+            const currentYear = philippineToday.getFullYear();
+            const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+            const nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+            
+            const newMonth = newDate.getMonth();
+            const newYear = newDate.getFullYear();
+            
+            // Allow only current month and next month
+            const isCurrentMonth = (newYear === currentYear && newMonth === currentMonth);
+            const isNextMonth = (newYear === nextYear && newMonth === nextMonth);
+            
+            if (isCurrentMonth || isNextMonth) {
                 currentDate = newDate;
                 renderCalendar();
                 updateNavigationButtons();
@@ -604,16 +614,19 @@
             const nextBtn = document.getElementById('nextMonth');
             
             const philippineToday = getPhilippineDate();
-            const currentYear = currentDate.getFullYear();
-            const currentMonth = currentDate.getMonth();
-            const todayYear = philippineToday.getFullYear();
-            const todayMonth = philippineToday.getMonth();
+            const currentMonth = philippineToday.getMonth();
+            const currentYear = philippineToday.getFullYear();
+            const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+            const nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+            
+            const displayMonth = currentDate.getMonth();
+            const displayYear = currentDate.getFullYear();
             
             // Disable prev button if we're at current month
-            prevBtn.disabled = (currentYear === todayYear && currentMonth === todayMonth);
+            prevBtn.disabled = (displayYear === currentYear && displayMonth === currentMonth);
             
             // Disable next button if we're at next month
-            nextBtn.disabled = (currentYear === todayYear && currentMonth === todayMonth + 1);
+            nextBtn.disabled = (displayYear === nextYear && displayMonth === nextMonth);
         }
 
         // Load availability using JSONP method to bypass CORS
