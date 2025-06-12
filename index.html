@@ -634,7 +634,7 @@ const todayInSelectedTz = getCurrentDateInTimezone(); // Use this for minimum da
                 dayElement.className = 'calendar-day';
                 dayElement.textContent = cellDate.getDate();
                 
-                const dateString = cellDate.toISOString().split('T')[0];
+                const dateString = formatDateConsistently(cellDate);
                 const isCurrentMonth = cellDate.getMonth() === month;
                 const isToday = cellDate.getTime() === todayInSelectedTz.getTime();
 const isPastDate = cellDate < todayInSelectedTz;
