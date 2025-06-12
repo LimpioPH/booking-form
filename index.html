@@ -402,6 +402,11 @@
             <div class="error-message" id="errorMessage">
                 There was an error submitting your request. Please try again or contact us directly.
             </div>
+
+            <div class="loading" id="loadingAvailability">
+                Loading available dates and times...
+            </div>
+            
             <form id="bookingForm" style="display: none;">
                 <div class="form-group">
                     <label for="firstName">Name</label>
@@ -627,7 +632,7 @@
         // Load availability using JSONP method to bypass CORS
         async function loadAvailability() {
             try {
-                updateConnectionStatus(false, 'Loading');
+                updateConnectionStatus(false, '');
                 
                 // Try JSONP approach first
                 const script = document.createElement('script');
