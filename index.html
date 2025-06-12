@@ -632,7 +632,7 @@
         // Load availability using JSONP method to bypass CORS
         async function loadAvailability() {
             try {
-                updateConnectionStatus(false, 'Loading availability...');
+                updateConnectionStatus(false, '');
                 
                 // Try JSONP approach first
                 const script = document.createElement('script');
