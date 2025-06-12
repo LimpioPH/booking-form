@@ -103,9 +103,14 @@
             padding: 40px 30px;
         }
 
-        .form-group {
-            margin-bottom: 25px;
-        }
+.form-group {
+    margin-bottom: 30px;
+}
+
+.form-group label {
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+}
 
         label {
             display: block;
@@ -134,19 +139,23 @@
         }
 
         .datetime-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
+    display: block;
+}
 
+.datetime-container .form-group {
+    margin-bottom: 30px;
+}
         /* Calendar Styles */
-        .calendar-container {
-            background: #fafafa;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
+.calendar-container {
+    background: #fafafa;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
         .calendar-header {
             display: flex;
@@ -210,16 +219,18 @@
         }
 
         .calendar-day {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid transparent;
-        }
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    min-height: 40px;
+    font-weight: 500;
+}
 
         .calendar-day.other-month {
             color: #ccc;
@@ -358,10 +369,20 @@
         }
 
         @media (max-width: 768px) {
-            .datetime-container {
-                grid-template-columns: 1fr;
-                gap: 0;
-            }
+    .calendar-container {
+        max-width: 100%;
+        padding: 15px;
+    }
+    
+    .calendar-day {
+        min-height: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .form-container {
+        padding: 20px 15px;
+    }
+}
             
             .header h1 {
                 font-size: 2rem;
