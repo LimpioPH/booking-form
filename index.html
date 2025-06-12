@@ -567,14 +567,22 @@ function getCurrentDateInTimezone() {
         let currentDate = getCurrentDateInTimezone();
 
         // Update connection status
-        function updateConnectionStatus(online, message) {
-            const indicator = document.getElementById('statusIndicator');
-            const statusText = document.getElementById('statusText');
-            
-            isOnline = online;
-            indicator.className = `status-indicator ${online ? 'status-online' : 'status-offline'}`;
-            statusText.textContent = message;
-        }
+function updateConnectionStatus(online, message) {
+    const indicator = document.getElementById('statusIndicator');
+    const statusText = document.getElementById('statusText');
+    const connectionStatus = document.getElementById('connectionStatus');
+    
+    isOnline = online;
+    indicator.className = `status-indicator ${online ? 'status-online' : 'status-offline'}`;
+    statusText.textContent = message;
+    
+    // Hide connection status during loading, show when connected/offline
+    if (message === 'Loading') {
+        connectionStatus.style.display = 'none';
+    } else {
+        connectionStatus.style.display = 'block';
+    }
+}
 
         // Calendar functions
         function renderCalendar() {
@@ -727,7 +735,8 @@ const isAvailable = availabilityData[dateString] && availabilityData[dateString]
         // Load availability using JSONP method to bypass CORS
         async function loadAvailability() {
             try {
-                updateConnectionStatus(false, 'Loading');
+updateConnectionStatus(false, 'Loading');
+document.getElementById('connectionStatus').style.display = 'none';
                 
                 // Try JSONP approach first
                 const script = document.createElement('script');
@@ -747,8 +756,9 @@ const isAvailable = availabilityData[dateString] && availabilityData[dateString]
                         }
 
                         updateConnectionStatus(true, 'Connected');
-                        document.getElementById('loadingAvailability').style.display = 'none';
+document.getElementById('loadingAvailability').style.display = 'none';
 document.getElementById('bookingForm').style.display = 'block';
+document.getElementById('connectionStatus').style.display = 'block';
 document.getElementById('submitBtn').style.display = 'block'; /* ADD THIS LINE */
                         renderCalendar();
                         updateNavigationButtons();
@@ -794,6 +804,7 @@ document.getElementById('submitBtn').style.display = 'block'; /* ADD THIS LINE *
         // Fallback availability data
         function loadFallbackAvailability() {
             updateConnectionStatus(false, 'Using offline schedule');
+document.getElementById('connectionStatus').style.display = 'block';
             
             // Fallback to sample data using Philippine time
             const today = getCurrentDateInTimezone();
