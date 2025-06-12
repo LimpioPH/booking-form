@@ -621,7 +621,8 @@ function getCurrentDateInTimezone() {
             const startDate = new Date(firstDay);
             startDate.setDate(firstDay.getDate() - firstDay.getDay());
             
-            const today = getCurrentDateInTimezone();
+            const today = new Date(); // Use actual current date for comparison
+const todayInSelectedTz = getCurrentDateInTimezone(); // Use this for minimum date logic
             today.setHours(0, 0, 0, 0);
             
             // Create calendar days
@@ -635,18 +636,21 @@ function getCurrentDateInTimezone() {
                 
                 const dateString = cellDate.toISOString().split('T')[0];
                 const isCurrentMonth = cellDate.getMonth() === month;
-                const isToday = cellDate.getTime() === today.getTime();
-                const isAvailable = availabilityData[dateString] && availabilityData[dateString].length > 0;
+                const isToday = cellDate.getTime() === todayInSelectedTz.getTime();
+const isPastDate = cellDate < todayInSelectedTz;
+const isAvailable = availabilityData[dateString] && availabilityData[dateString].length > 0 && !isPastDate;
                 
                 // Add appropriate classes
                 if (!isCurrentMonth) {
-                    dayElement.classList.add('other-month');
-                } else if (isAvailable) {
-                    dayElement.classList.add('available');
-                    dayElement.addEventListener('click', () => selectDate(cellDate, dateString));
-                } else {
-                    dayElement.classList.add('unavailable');
-                }
+    dayElement.classList.add('other-month');
+} else if (isPastDate) {
+    dayElement.classList.add('unavailable');
+} else if (isAvailable) {
+    dayElement.classList.add('available');
+    dayElement.addEventListener('click', () => selectDate(cellDate, dateString));
+} else {
+    dayElement.classList.add('unavailable');
+}
                 
                 if (isToday) {
                     dayElement.classList.add('today');
@@ -1014,6 +1018,10 @@ updateTimezoneDisplay();
 // Handle timezone changes
 document.getElementById('timezone').addEventListener('change', function() {
     currentDate = getCurrentDateInTimezone();
+    selectedDate = null; // Clear selected date when timezone changes
+    document.getElementById('availableDate').value = '';
+    document.getElementById('selectedDateDisplay').style.display = 'none';
+    populateTimes(); // Clear time options
     renderCalendar();
     updateNavigationButtons();
     updateTimezoneDisplay();
