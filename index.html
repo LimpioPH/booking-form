@@ -732,78 +732,100 @@ const isAvailable = availabilityData[dateString] && availabilityData[dateString]
             nextBtn.disabled = (displayYear === nextYear && displayMonth === nextMonth);
         }
 
-// Load availability using JSONP method to bypass CORS
-async function loadAvailability() {
-    try {
-        updateConnectionStatus(false, 'Loading');
-        document.getElementById('connectionStatus').style.display = 'none';
-        
-        // Add timeout to prevent hanging
-        const timeoutPromise = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Request timeout')), 10000)
-        );
-        
-        // Your Google Apps Script URL - make sure this is correct
-        const scriptUrl = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'; // Replace with actual URL
-        const jsonpUrl = `${scriptUrl}?callback=handleAvailabilityResponse&t=${Date.now()}`;
-        
-        // Create promise for JSONP request
-        const jsonpPromise = new Promise((resolve, reject) => {
-            window.handleAvailabilityResponse = function(data) {
-                delete window.handleAvailabilityResponse;
-                if (data && data.status === 'success') {
-                    resolve(data.availability);
-                } else {
-                    reject(new Error('Invalid response format'));
-                }
-            };
-            
-            const script = document.createElement('script');
-            script.src = jsonpUrl;
-            script.onerror = () => {
-                delete window.handleAvailabilityResponse;
-                reject(new Error('Script loading failed'));
-            };
-            document.head.appendChild(script);
-            
-            // Clean up script tag after 15 seconds
-            setTimeout(() => {
-                if (document.head.contains(script)) {
+        // Load availability using JSONP method to bypass CORS
+        async function loadAvailability() {
+            try {
+updateConnectionStatus(false, 'Loading');
+document.getElementById('connectionStatus').style.display = 'none';
+                
+                // Try JSONP approach first
+                const script = document.createElement('script');
+                const callbackName = 'jsonpCallback_' + Date.now();
+                
+                // Set up the callback function
+                window[callbackName] = function(data) {
+                    try {
+                        if (data.status === 'error') {
+                            throw new Error(data.message || 'Server error');
+                        }
+                        
+                        availabilityData = data.availability || {};
+                        
+                        if (Object.keys(availabilityData).length === 0) {
+                            throw new Error('No availability data received');
+                        }
+
+                        updateConnectionStatus(true, 'Connected');
+document.getElementById('loadingAvailability').style.display = 'none';
+document.getElementById('bookingForm').style.display = 'block';
+document.getElementById('connectionStatus').style.display = 'block';
+                        renderCalendar();
+                        updateNavigationButtons();
+                        
+                    } catch (error) {
+                        console.error('Error processing JSONP response:', error);
+                        loadFallbackAvailability();
+                    } finally {
+                        // Clean up
+                        document.head.removeChild(script);
+                        delete window[callbackName];
+                    }
+                };
+                
+                // Add error handling for script loading
+                script.onerror = function() {
+                    console.error('JSONP script failed to load');
                     document.head.removeChild(script);
-                }
-            }, 15000);
-        });
-        
-        // Race between actual request and timeout
-        const availability = await Promise.race([jsonpPromise, timeoutPromise]);
-        
-        // Success - update with online data
-        availabilityData = availability;
-        updateConnectionStatus(true, 'Connected');
-        document.getElementById('loadingAvailability').style.display = 'none';
-        document.getElementById('bookingForm').style.display = 'block';
-        document.getElementById('connectionStatus').style.display = 'block';
-        renderCalendar();
-        updateNavigationButtons();
-        
-    } catch (error) {
-        console.error('Failed to load online availability:', error);
-        loadFallbackAvailability();
-    }
-}
+                    delete window[callbackName];
+                    loadFallbackAvailability();
+                };
+                
+                // Create the JSONP request
+                script.src = `${APPS_SCRIPT_URL}?callback=${callbackName}`;
+                document.head.appendChild(script);
+                
+                // Fallback timeout
+                setTimeout(() => {
+                    if (window[callbackName]) {
+                        console.error('JSONP request timed out');
+                        document.head.removeChild(script);
+                        delete window[callbackName];
+                        loadFallbackAvailability();
+                    }
+                }, 10000);
+                
+            } catch (error) {
+                console.error('Error loading availability:', error);
+                loadFallbackAvailability();
+            }
+        }
 
         // Fallback availability data
-function loadFallbackAvailability() {
-    updateConnectionStatus(false, 'Using offline schedule');
-    document.getElementById('connectionStatus').style.display = 'block';
-    document.getElementById('loadingAvailability').style.display = 'none';
-    document.getElementById('bookingForm').style.display = 'block';
-    
-    // Set fallback availability data
-    availabilityData = generateFallbackAvailability();
-    renderCalendar();
-    updateNavigationButtons();
-}
+        function loadFallbackAvailability() {
+            updateConnectionStatus(false, 'Using offline schedule');
+document.getElementById('connectionStatus').style.display = 'block';
+            
+            // Fallback to sample data using Philippine time
+            const today = getCurrentDateInTimezone();
+            availabilityData = {};
+            
+            // Generate next 14 days of availability
+            for (let i = 1; i <= 14; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                const dateString = date.toISOString().split('T')[0];
+                
+                // Skip weekends for example
+                if (date.getDay() !== 0 && date.getDay() !== 6) {
+                    availabilityData[dateString] = ["9:00 AM", "11:00 AM", "2:00 PM", "4:00 PM"];
+                }
+            }
+            
+            document.getElementById('loadingAvailability').style.display = 'none';
+            document.getElementById('bookingForm').style.display = 'block';
+            renderCalendar();
+            updateNavigationButtons();
+        }
 
         // Populate time dropdown when date is selected
         function populateTimes() {
