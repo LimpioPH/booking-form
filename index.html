@@ -504,7 +504,7 @@
 
     <script>
         // REPLACE THIS URL WITH YOUR ACTUAL GOOGLE APPS SCRIPT DEPLOYMENT URL
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4N1ABbaOmMNuHjD1EWTfRqAPvZzlH9z30guGsawZNexj_pvImIAF3DoREkN5XSPew/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyknjO05LioUvevTsfmkXjhH6oTilXrV5uwMi_v0KEq1nSp71VnkVYosT-mNeK7l3O3/exec';
         
         let availabilityData = {};
         let isOnline = false;
@@ -733,12 +733,19 @@ const isAvailable = availabilityData[dateString] && availabilityData[dateString]
         }
 
         // Load availability using JSONP method to bypass CORS
-        async function loadAvailability() {
-            try {
+async function loadAvailability() {
+    try {
+        // Skip JSONP on mobile browsers and go straight to fallback
+        if (isMobileBrowser()) {
+            console.log('Mobile browser detected - using offline schedule');
+            loadFallbackAvailability();
+            return;
+        }
+        
 updateConnectionStatus(false, 'Loading');
 document.getElementById('connectionStatus').style.display = 'none';
-                
-                // Try JSONP approach first
+        
+        // Try JSONP approach first
                 const script = document.createElement('script');
                 const callbackName = 'jsonpCallback_' + Date.now();
                 
